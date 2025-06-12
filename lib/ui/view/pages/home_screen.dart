@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icecream_crud_app/ui/view/pages/charts_screen.dart';
-import 'package:icecream_crud_app/ui/view/pages/products_screen.dart'; // Importar a tela de Produtos
+import 'package:icecream_crud_app/ui/view/pages/products_screen.dart';
+import 'package:icecream_crud_app/ui/view/pages/sale_screen.dart'; // Importar a tela de Produtos
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,9 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const ChartsScreen(),
-    const Center(child: Text('Vendas')),
+    const SalesScreen(),
     const Center(child: Text('Clientes')),
-    const ProductsScreen(), // Adicionar a tela de produtos
+    const ProductsScreen(),
     const Center(child: Text('Rotas')),
   ];
 
