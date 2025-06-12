@@ -8,13 +8,11 @@ class IsarProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
-  // Getters
   Isar? get isar => _isar;
   bool get isInitialized => _isInitialized;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  // Inicializa o Isar
   Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -23,7 +21,7 @@ class IsarProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _isar = await IsarService.instance;
+      _isar = await IsarDatabase.instance;
       _isInitialized = true;
     } catch (e) {
       _error = 'Erro ao inicializar banco de dados: $e';
@@ -34,7 +32,6 @@ class IsarProvider extends ChangeNotifier {
     }
   }
 
-  // Fecha o Isar
   Future<void> close() async {
     await IsarDatabase.close();
     _isar = null;
