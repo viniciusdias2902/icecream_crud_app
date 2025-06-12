@@ -30,6 +30,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       onAddPressed: () {
         _showAddProductDialog(context);
       },
+      onEditPressed: (index) async {
+        final product = context.read<ProductViewModel>().products[index];
+        _showEditProductDialog(context, product);
+      },
       onDeletePressed: (index) async {
         final product = context.read<ProductViewModel>().products[index];
         await context.read<ProductViewModel>().deleteProduct(product.id);
@@ -52,23 +56,33 @@ class _ProductsScreenState extends State<ProductsScreen> {
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(labelText: 'Nome do Produto'),
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
               ),
               TextField(
                 controller: priceController,
                 decoration: const InputDecoration(labelText: 'Preço (R\$)'),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                final productName = nameController.text;
+                Navigator.pop(context);
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                final productName = nameController.text.trim();
                 final priceInReais = double.tryParse(priceController.text) ?? 0;
                 final unitValueInCents = (priceInReais * 100)
                     .toInt(); // Convertendo para centavos
 
-                if (productName.isNotEmpty) {
+                if (productName.isNotEmpty && unitValueInCents > 0) {
                   final product = ProductModel()
                     ..productName = productName
                     ..unitValueInCents = unitValueInCents;
@@ -85,15 +99,102 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   }
 
                   Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Por favor, preencha todos os campos corretamente.',
+                      ),
+                    ),
+                  );
                 }
               },
               child: const Text('Salvar'),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditProductDialog(BuildContext context, ProductModel product) {
+    final TextEditingController nameController = TextEditingController(
+      text: product.productName,
+    );
+    final TextEditingController priceController = TextEditingController(
+      text: (product.unitValueInCents / 100).toStringAsFixed(2),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Editar Produto'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Nome do Produto'),
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
+              ),
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration(labelText: 'Preço (R\$)'),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+              ),
+            ],
+          ),
+          actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                final productName = nameController.text.trim();
+                final priceInReais = double.tryParse(priceController.text) ?? 0;
+                final unitValueInCents = (priceInReais * 100)
+                    .toInt(); // Convertendo para centavos
+
+                if (productName.isNotEmpty && unitValueInCents > 0) {
+                  // Atualizar os dados do produto existente
+                  product.productName = productName;
+                  product.unitValueInCents = unitValueInCents;
+
+                  context.read<ProductViewModel>().addProduct(
+                    product,
+                  ); // ISAR usa add para update também
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Produto "$productName" atualizado com sucesso!',
+                        ),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                      ),
+                    );
+                  }
+
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Por favor, preencha todos os campos corretamente.',
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Salvar'),
             ),
           ],
         );

@@ -7,6 +7,7 @@ class DataListView<T> extends StatelessWidget {
   final String Function(T) getSubtitle;
   final VoidCallback onAddPressed;
   final Future<void> Function(int) onDeletePressed;
+  final Future<void> Function(int)? onEditPressed;
 
   const DataListView({
     Key? key,
@@ -16,6 +17,7 @@ class DataListView<T> extends StatelessWidget {
     required this.getSubtitle,
     required this.onAddPressed,
     required this.onDeletePressed,
+    this.onEditPressed,
   }) : super(key: key);
 
   @override
@@ -34,9 +36,21 @@ class DataListView<T> extends StatelessWidget {
               return ListTile(
                 title: Text(getTitle(item)),
                 subtitle: Text(getSubtitle(item)),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => onDeletePressed(index),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (onEditPressed != null)
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => onEditPressed!(index),
+                        tooltip: 'Editar',
+                      ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => onDeletePressed(index),
+                      tooltip: 'Excluir',
+                    ),
+                  ],
                 ),
                 onTap: () {},
               );

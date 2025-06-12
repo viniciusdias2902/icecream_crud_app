@@ -32,6 +32,10 @@ class _RouteScreenState extends State<RouteScreen> {
       onAddPressed: () {
         _showAddRouteDialog(context);
       },
+      onEditPressed: (index) async {
+        final route = viewModel.routes[index];
+        _showEditRouteDialog(context, route);
+      },
       onDeletePressed: (index) async {
         final route = viewModel.routes[index];
         if (!viewModel.canDeleteRoute(route)) {
@@ -69,6 +73,7 @@ class _RouteScreenState extends State<RouteScreen> {
                   hintText: 'Ex: Piripiri, Brasileira, Piracuruca',
                 ),
                 textCapitalization: TextCapitalization.words,
+                autofocus: true,
               ),
             ],
           ),
@@ -92,6 +97,77 @@ class _RouteScreenState extends State<RouteScreen> {
                           'Rota "$routeName" adicionada com sucesso!',
                         ),
                         backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    );
+                  }
+
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Por favor, insira o nome da rota.'),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditRouteDialog(BuildContext context, RouteModel route) {
+    final TextEditingController nameController = TextEditingController(
+      text: route.routeName,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Editar Rota'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nome da Rota',
+                  hintText: 'Ex: Piripiri, Brasileira, Piracuruca',
+                ),
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                final routeName = nameController.text.trim();
+                if (routeName.isNotEmpty) {
+                  // Atualizar os dados da rota existente
+                  route.routeName = routeName;
+
+                  context.read<RouteViewModel>().addRoute(
+                    route,
+                  ); // ISAR usa add para update também
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Rota "$routeName" atualizada com sucesso!',
+                        ),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
                       ),
                     );
                   }
