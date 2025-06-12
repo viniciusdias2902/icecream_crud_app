@@ -20,3 +20,23 @@ A estrutura do projeto é composta por várias camadas que fazem parte da recome
 - **Gerenciamento de Vendas**: Monitoramento das vendas realizadas.
 - **Geração de gráficos**: Monitoramento das vendas realizadas.
 ## Screenshots
+
+### Tela Inicial
+
+![Tela Inicial](screenshots/0.png)
+
+### Adição de rota
+
+![Adição de rota](screenshots/1.png)
+
+### Visualização de clientes
+
+![Visualização de clientes](screenshots/2.png)
+
+### Adição de vendas
+
+![Adição de vendas](screenshots/3.png)
+
+### Gráfico
+
+![Gráfico](screenshots/4.png)
