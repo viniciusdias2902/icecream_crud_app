@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:icecream_crud_app/core/AppTheme.dart';
+import 'package:icecream_crud_app/core/app_theme.dart';
+import 'package:icecream_crud_app/ui/view/pages/home_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+      home: HomeScreen(),
     );
   }
 }
