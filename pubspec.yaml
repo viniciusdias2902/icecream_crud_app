@@ -7,13 +7,25 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
+  build_runner: ^2.4.15
+  fl_chart: ^1.0.0
   flutter:
     sdk: flutter
+  isar:
+    hosted: https://pub.isar-community.dev
+    version: 3.1.8
+  isar_flutter_libs:
+    hosted: https://pub.isar-community.dev
+    version: 3.1.8
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  isar_generator:
+    hosted: https://pub.isar-community.dev
+    version: 3.1.8
 
 flutter:
   uses-material-design: true
