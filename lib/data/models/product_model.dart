@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+part 'product_model.g.dart';
 
 @Collection()
 class ProductModel {
