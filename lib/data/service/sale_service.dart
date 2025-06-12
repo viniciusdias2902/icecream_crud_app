@@ -6,8 +6,7 @@ class SaleService {
 
   SaleService(this._isar);
 
-  // Create
-  Future<int> createSale(SaleModel sale) async {
+  Future<int> addSale(SaleModel sale) async {
     return await _isar.writeTxn(() async {
       return await _isar.saleModels.put(sale);
     });
