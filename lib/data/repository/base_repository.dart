@@ -7,17 +7,4 @@ abstract class BaseRepository<T> implements IRepository<T> {
   BaseRepository(this.isar);
 
   IsarCollection<T> get collection;
-
-  @override
-  Future<int> update(T item) => add(item);
-
-  @override
-  Stream<List<T>> watchAll() {
-    return collection.where().watch(fireImmediately: true);
-  }
-
-  @override
-  Stream<T?> watchById(int id) {
-    return collection.watchObject(id, fireImmediately: true);
-  }
 }
