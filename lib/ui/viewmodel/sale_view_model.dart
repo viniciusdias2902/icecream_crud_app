@@ -20,7 +20,6 @@ class SalesViewModel extends ChangeNotifier {
     this._customerRepository,
     this._routeRepository,
   ) {
-    // Carregar dados iniciais
     loadSales();
     loadProducts();
     loadCustomers();
@@ -51,7 +50,6 @@ class SalesViewModel extends ChangeNotifier {
 
     try {
       _sales = await _saleRepository.getAll();
-      // Carregar os links relacionados para cada venda
       for (var sale in _sales) {
         await sale.product.load();
         await sale.customer.load();
@@ -108,8 +106,6 @@ class SalesViewModel extends ChangeNotifier {
       final sale = SaleModel()
         ..quantitySold = quantity
         ..totalValueInCents = product.unitValueInCents * quantity;
-
-      // Configurar os links
       sale.product.value = product;
       sale.customer.value = customer;
       sale.route.value = route;
@@ -139,12 +135,10 @@ class SalesViewModel extends ChangeNotifier {
     }
   }
 
-  // Método auxiliar para calcular o total de vendas
   int get totalSalesValue {
     return _sales.fold(0, (sum, sale) => sum + sale.totalValueInCents);
   }
 
-  // Método auxiliar para obter vendas por produto
   Map<String, int> getSalesByProduct() {
     final salesByProduct = <String, int>{};
     for (var sale in _sales) {

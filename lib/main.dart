@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:icecream_crud_app/ui/viewmodel/isar_provider.dart';
 import 'package:icecream_crud_app/ui/viewmodel/product_view_model.dart';
+import 'package:icecream_crud_app/ui/viewmodel/customer_view_model.dart';
+import 'package:icecream_crud_app/ui/viewmodel/route_view_model.dart';
 import 'package:icecream_crud_app/ui/viewmodel/sale_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:icecream_crud_app/ui/view/pages/home_screen.dart';
@@ -35,6 +37,7 @@ class MainApp extends StatelessWidget {
 
           return MultiProvider(
             providers: [
+              // Product Provider
               ChangeNotifierProvider(
                 create: (_) => ProductViewModel(
                   ProductRepository(
@@ -43,6 +46,32 @@ class MainApp extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Route Provider
+              ChangeNotifierProvider(
+                create: (_) => RouteViewModel(
+                  RouteRepository(
+                    isarProvider.isar!,
+                    RouteService(isarProvider.isar!),
+                  ),
+                ),
+              ),
+
+              // Customer Provider
+              ChangeNotifierProvider(
+                create: (_) => CustomerViewModel(
+                  CustomerRepository(
+                    isarProvider.isar!,
+                    CustomerService(isarProvider.isar!),
+                  ),
+                  RouteRepository(
+                    isarProvider.isar!,
+                    RouteService(isarProvider.isar!),
+                  ),
+                ),
+              ),
+
+              // Sales Provider
               ChangeNotifierProvider(
                 create: (_) => SalesViewModel(
                   SaleRepository(

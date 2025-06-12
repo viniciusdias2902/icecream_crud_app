@@ -38,9 +38,7 @@ class DataListView<T> extends StatelessWidget {
                   icon: const Icon(Icons.delete),
                   onPressed: () => onDeletePressed(index),
                 ),
-                onTap: () {
-                  // Handle item tap for editing if necessary
-                },
+                onTap: () {},
               );
             },
           ),

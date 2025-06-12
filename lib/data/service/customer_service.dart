@@ -8,7 +8,15 @@ class CustomerService {
 
   Future<int> addCustomer(CustomerModel customer) async {
     return await _isar.writeTxn(() async {
-      return await _isar.customerModels.put(customer);
+      // Salvar o cliente
+      final customerId = await _isar.customerModels.put(customer);
+
+      // Salvar o link da rota se existir
+      if (customer.route.value != null) {
+        await customer.route.save();
+      }
+
+      return customerId;
     });
   }
 

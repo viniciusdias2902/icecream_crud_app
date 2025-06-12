@@ -8,7 +8,15 @@ class SaleService {
 
   Future<int> addSale(SaleModel sale) async {
     return await _isar.writeTxn(() async {
-      return await _isar.saleModels.put(sale);
+      // Salvar a venda
+      final saleId = await _isar.saleModels.put(sale);
+
+      // Salvar os links relacionados
+      await sale.product.save();
+      await sale.customer.save();
+      await sale.route.save();
+
+      return saleId;
     });
   }
 

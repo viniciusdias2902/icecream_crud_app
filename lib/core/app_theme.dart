@@ -30,7 +30,7 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: const Color(0xff7287fd),
       secondary: Color(0xff1e66f5),
-      tertiary: Color(0xffdd7878),
+      tertiary: Color(0xff40a02b),
       surface: Color(0xffeff1f5),
       onSurface: Color(0xff4c4f69),
       error: Color(0xffd20f39),
@@ -46,7 +46,7 @@ class AppTheme {
     colorScheme: ColorScheme.dark(
       primary: Color(0xffb4befe),
       secondary: Color(0xff89b4fa),
-      tertiary: Color(0xff89b4fa),
+      tertiary: Color(0xffa6e3a1),
       surface: Color(0xff1e1e2e),
       onSurface: Color(0xffcdd6f4),
       error: Color(0xfff38ba8),

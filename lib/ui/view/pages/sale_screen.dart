@@ -8,21 +8,28 @@ import 'package:icecream_crud_app/data/models/customer_model.dart';
 import 'package:icecream_crud_app/data/models/route_model.dart';
 import 'package:intl/intl.dart';
 
-class SalesScreen extends StatefulWidget {
-  const SalesScreen({super.key});
+class SaleScreen extends StatefulWidget {
+  const SaleScreen({super.key});
 
   @override
-  State<SalesScreen> createState() => _SalesScreenState();
+  State<SaleScreen> createState() => _SaleScreenState();
 }
 
-class _SalesScreenState extends State<SalesScreen> {
+class _SaleScreenState extends State<SaleScreen> {
   @override
   void initState() {
     super.initState();
-    // Carregar vendas assim que a tela for exibida pela primeira vez
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SalesViewModel>().loadSales();
+      _loadAllData();
     });
+  }
+
+  void _loadAllData() {
+    final viewModel = context.read<SalesViewModel>();
+    viewModel.loadSales();
+    viewModel.loadProducts();
+    viewModel.loadCustomers();
+    viewModel.loadRoutes();
   }
 
   @override
@@ -45,25 +52,34 @@ class _SalesScreenState extends State<SalesScreen> {
         return 'Qtd: ${item.quantitySold} - R\$ ${totalValue.toStringAsFixed(2)} - $formattedDate';
       },
       onAddPressed: () {
-        // Verificar se há dados necessários antes de mostrar o diálogo
-        if (viewModel.products.isEmpty ||
-            viewModel.customers.isEmpty ||
-            viewModel.routes.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'É necessário cadastrar produtos, clientes e rotas antes de criar vendas.',
+        _loadAllData();
+        Future.delayed(const Duration(milliseconds: 100), () {
+          final vm = context.read<SalesViewModel>();
+          if (vm.products.isEmpty ||
+              vm.customers.isEmpty ||
+              vm.routes.isEmpty) {
+            String message = 'É necessário cadastrar ';
+            List<String> missing = [];
+
+            if (vm.products.isEmpty) missing.add('produtos');
+            if (vm.customers.isEmpty) missing.add('clientes');
+            if (vm.routes.isEmpty) missing.add('rotas');
+
+            message += missing.join(', ') + ' antes de criar vendas.';
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                duration: const Duration(seconds: 3),
               ),
-            ),
-          );
-          return;
-        }
-        // Mostrar o diálogo para adicionar venda
-        _showAddSaleDialog(context);
+            );
+            return;
+          }
+          _showAddSaleDialog(context);
+        });
       },
       onDeletePressed: (index) async {
         final sale = viewModel.sales[index];
-        // Aguardar a exclusão da venda
         await viewModel.deleteSale(sale.id);
       },
     );
@@ -88,7 +104,6 @@ class _SalesScreenState extends State<SalesScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Dropdown de Produtos
                     DropdownButtonFormField<ProductModel>(
                       decoration: const InputDecoration(labelText: 'Produto'),
                       value: selectedProduct,
@@ -105,8 +120,6 @@ class _SalesScreenState extends State<SalesScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Dropdown de Clientes
                     DropdownButtonFormField<CustomerModel>(
                       decoration: const InputDecoration(labelText: 'Cliente'),
                       value: selectedCustomer,
@@ -123,8 +136,6 @@ class _SalesScreenState extends State<SalesScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Dropdown de Rotas
                     DropdownButtonFormField<RouteModel>(
                       decoration: const InputDecoration(labelText: 'Rota'),
                       value: selectedRoute,
@@ -141,34 +152,49 @@ class _SalesScreenState extends State<SalesScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // Campo de Quantidade
                     TextField(
                       controller: quantityController,
                       decoration: const InputDecoration(
                         labelText: 'Quantidade',
+                        hintText: 'Digite a quantidade vendida',
                       ),
                       keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
                     ),
                     const SizedBox(height: 16),
-
-                    // Mostrar valor total se produto e quantidade estiverem preenchidos
                     if (selectedProduct != null &&
                         quantityController.text.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text(
-                          'Valor Total: R\$ ${((selectedProduct!.unitValueInCents * (int.tryParse(quantityController.text) ?? 0)) / 100).toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onPrimaryContainer,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Valor Total:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                            Text(
+                              'R\$ ${((selectedProduct!.unitValueInCents * (int.tryParse(quantityController.text) ?? 0)) / 100).toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                   ],
@@ -182,26 +208,39 @@ class _SalesScreenState extends State<SalesScreen> {
                   child: const Text('Cancelar'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final quantity = int.tryParse(quantityController.text) ?? 0;
 
                     if (selectedProduct != null &&
                         selectedCustomer != null &&
                         selectedRoute != null &&
                         quantity > 0) {
-                      viewModel.addSale(
+                      Navigator.pop(context);
+
+                      await viewModel.addSale(
                         product: selectedProduct!,
                         customer: selectedCustomer!,
                         route: selectedRoute!,
                         quantity: quantity,
                       );
-                      Navigator.pop(context);
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Venda adicionada com sucesso!'),
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.tertiary,
+                          ),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
                             'Por favor, preencha todos os campos corretamente.',
                           ),
+                          backgroundColor: Colors.orange,
                         ),
                       );
                     }

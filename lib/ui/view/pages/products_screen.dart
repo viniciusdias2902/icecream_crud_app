@@ -15,7 +15,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   void initState() {
     super.initState();
-    // Carregar produtos assim que a tela for exibida pela primeira vez
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProductViewModel>().loadProducts();
     });
@@ -29,12 +28,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
       getTitle: (item) => item.productName,
       getSubtitle: (item) => 'R\$ ${item.unitValueInCents / 100}',
       onAddPressed: () {
-        // Mostrar o diálogo para adicionar produto
         _showAddProductDialog(context);
       },
       onDeletePressed: (index) async {
         final product = context.read<ProductViewModel>().products[index];
-        // Aguardar a exclusão do produto
         await context.read<ProductViewModel>().deleteProduct(product.id);
       },
     );
@@ -70,11 +67,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 final priceInReais = double.tryParse(priceController.text) ?? 0;
                 final unitValueInCents = (priceInReais * 100)
                     .toInt(); // Convertendo para centavos
+
                 if (productName.isNotEmpty) {
                   final product = ProductModel()
                     ..productName = productName
                     ..unitValueInCents = unitValueInCents;
                   context.read<ProductViewModel>().addProduct(product);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Produto "$productName" adicionado com sucesso!',
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    );
+                  }
+
                   Navigator.pop(context);
                 }
               },
