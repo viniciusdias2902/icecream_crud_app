@@ -3,6 +3,6 @@ import 'package:isar/isar.dart';
 @Collection()
 class ProductModel {
   Id id = Isar.autoIncrement;
-  late int unitValue;
+  late int unitValueInCents;
   late String productName;
 }
