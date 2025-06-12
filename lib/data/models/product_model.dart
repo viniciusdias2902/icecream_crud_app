@@ -1,4 +1,8 @@
 import 'package:isar/isar.dart';
 
 @Collection()
-class Product {}
+class ProductModel {
+  Id id = Isar.autoIncrement;
+  late int unitValue;
+  late String productName;
+}
