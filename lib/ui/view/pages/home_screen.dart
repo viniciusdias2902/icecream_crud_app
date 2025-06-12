@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icecream_crud_app/ui/view/pages/charts_screen.dart';
+import 'package:icecream_crud_app/ui/view/pages/products_screen.dart'; // Importar a tela de Produtos
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,13 +11,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
   final List<Widget> _screens = [
     const ChartsScreen(),
     const Center(child: Text('Vendas')),
     const Center(child: Text('Clientes')),
-    const Center(child: Text('Produtos')),
+    const ProductsScreen(), // Adicionar a tela de produtos
     const Center(child: Text('Rotas')),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         unselectedItemColor: Theme.of(context).colorScheme.primary,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Gráficos',

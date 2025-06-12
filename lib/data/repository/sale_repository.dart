@@ -1,5 +1,7 @@
 import 'package:icecream_crud_app/data/models/sale_model.dart';
-import 'package:icecream_crud_app/data/services/sale_service.dart';
+import 'package:icecream_crud_app/data/repository/base_repository.dart';
+import 'package:icecream_crud_app/data/service/sale_service.dart';
+import 'package:isar/isar.dart';
 
 class SaleRepository extends BaseRepository<SaleModel> {
   final SaleService _saleService;

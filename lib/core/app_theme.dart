@@ -16,7 +16,10 @@ class AppTheme {
     bodySmall: GoogleFonts.poppins(fontSize: 12),
     bodyMedium: GoogleFonts.poppins(fontSize: 14),
     bodyLarge: GoogleFonts.poppins(fontSize: 16),
-    headlineSmall: GoogleFonts.poppins(fontSize: 24),
+    headlineSmall: GoogleFonts.poppins(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    ),
     headlineMedium: GoogleFonts.poppins(fontSize: 34),
     headlineLarge: GoogleFonts.poppins(fontSize: 40),
   );
