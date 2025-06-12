@@ -22,4 +22,16 @@ class Apptheme {
       error: Color(0xffd20f39),
     ),
   );
+  static ThemeData get dark => ThemeData(
+    brightness: Brightness.light,
+    textTheme: textTheme,
+    colorScheme: ColorScheme.light(
+      primary: Color(0xffb4befe),
+      secondary: Color(0xfff5c2e7),
+      tertiary: Color(0xffdd7878),
+      surface: Color(0xff1e1e2e),
+      onSurface: Color(0xffcdd6f4),
+      error: Color(0xfff38ba8),
+    ),
+  );
 }
